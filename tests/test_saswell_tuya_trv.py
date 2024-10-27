@@ -866,7 +866,7 @@ async def test_saswell_state_report(zigpy_device_from_quirk, quirk):
         Saswell_TYST11,
     ),
 )
-async def test_saswell_send_attribute(zigpy_device_from_quirk, quirk):
+async def test_saswell_send_attributes(zigpy_device_from_quirk, quirk):
     """Test thermostatic valve outgoing commands."""
 
     valve_dev = zigpy_device_from_quirk(quirk)
@@ -978,3 +978,293 @@ async def test_saswell_send_attribute(zigpy_device_from_quirk, quirk):
 
         _, status = await thermostat_cluster.command(0x0002)
         assert status == foundation.Status.UNSUP_CLUSTER_COMMAND
+
+
+@pytest.mark.parametrize(
+    "quirk",
+    (
+        Saswell_TZE200,
+        Saswell_TYST11,
+    ),
+)
+async def test_saswell_send_attribute_window_detection(zigpy_device_from_quirk, quirk):
+    """Test thermostatic valve outgoing commands."""
+
+    valve_dev = zigpy_device_from_quirk(quirk)
+    tuya_cluster = valve_dev.endpoints[1].tuya_manufacturer
+    onoff_cluster = valve_dev.endpoints[1].on_off
+
+    async def async_success(*args, **kwargs):
+        return foundation.Status.SUCCESS
+
+    with mock.patch.object(
+        tuya_cluster.endpoint, "request", side_effect=async_success
+    ) as m1:
+        # open window detection
+        (status,) = await onoff_cluster.write_attributes(
+            {
+                "on_off": 1,
+            }
+        )
+        m1.assert_called_with(
+            cluster=0xEF00,
+            sequence=1,
+            data=b"\x01\x01\x00\x00\x01\x08\x01\x00\x01\x01",
+            command_id=0,
+            timeout=5,
+            expect_reply=False,
+            use_ieee=False,
+            ask_for_ack=None,
+            priority=t.PacketPriority.NORMAL,
+        )
+        assert status == [
+            foundation.WriteAttributesStatusRecord(foundation.Status.SUCCESS)
+        ]
+
+
+@pytest.mark.parametrize(
+    "quirk",
+    (
+        Saswell_TZE200,
+        Saswell_TYST11,
+    ),
+)
+async def test_saswell_send_attribute_child_lock(zigpy_device_from_quirk, quirk):
+    """Test thermostatic valve outgoing commands."""
+
+    valve_dev = zigpy_device_from_quirk(quirk)
+    tuya_cluster = valve_dev.endpoints[1].tuya_manufacturer
+    onoff_cluster = valve_dev.endpoints[2].on_off
+
+    async def async_success(*args, **kwargs):
+        return foundation.Status.SUCCESS
+
+    with mock.patch.object(
+        tuya_cluster.endpoint, "request", side_effect=async_success
+    ) as m1:
+        (status,) = await onoff_cluster.write_attributes(
+            {
+                "on_off": 1,
+            }
+        )
+        m1.assert_called_with(
+            cluster=0xEF00,
+            sequence=1,
+            data=b"\x01\x01\x00\x00\x01\x28\x01\x00\x01\x01",
+            command_id=0,
+            timeout=5,
+            expect_reply=False,
+            use_ieee=False,
+            ask_for_ack=None,
+            priority=t.PacketPriority.NORMAL,
+        )
+        assert status == [
+            foundation.WriteAttributesStatusRecord(foundation.Status.SUCCESS)
+        ]
+
+
+@pytest.mark.parametrize(
+    "quirk",
+    (
+        Saswell_TZE200,
+        Saswell_TYST11,
+    ),
+)
+async def test_saswell_send_attribute_anti_freeze(zigpy_device_from_quirk, quirk):
+    """Test thermostatic valve outgoing commands."""
+
+    valve_dev = zigpy_device_from_quirk(quirk)
+    tuya_cluster = valve_dev.endpoints[1].tuya_manufacturer
+    onoff_cluster = valve_dev.endpoints[3].on_off
+
+    async def async_success(*args, **kwargs):
+        return foundation.Status.SUCCESS
+
+    with mock.patch.object(
+        tuya_cluster.endpoint, "request", side_effect=async_success
+    ) as m1:
+        (status,) = await onoff_cluster.write_attributes(
+            {
+                "on_off": 1,
+            }
+        )
+        m1.assert_called_with(
+            cluster=0xEF00,
+            sequence=1,
+            data=b"\x01\x01\x00\x00\x01\n\x01\x00\x01\x01",
+            command_id=0,
+            timeout=5,
+            expect_reply=False,
+            use_ieee=False,
+            ask_for_ack=None,
+            priority=t.PacketPriority.NORMAL,
+        )
+        assert status == [
+            foundation.WriteAttributesStatusRecord(foundation.Status.SUCCESS)
+        ]
+
+
+@pytest.mark.parametrize(
+    "quirk",
+    (
+        Saswell_TZE200,
+        Saswell_TYST11,
+    ),
+)
+async def test_saswell_send_attribute_limescale_protection(
+    zigpy_device_from_quirk, quirk
+):
+    """Test thermostatic valve outgoing commands."""
+
+    valve_dev = zigpy_device_from_quirk(quirk)
+    tuya_cluster = valve_dev.endpoints[1].tuya_manufacturer
+    onoff_cluster = valve_dev.endpoints[4].on_off
+
+    async def async_success(*args, **kwargs):
+        return foundation.Status.SUCCESS
+
+    with mock.patch.object(
+        tuya_cluster.endpoint, "request", side_effect=async_success
+    ) as m1:
+        (status,) = await onoff_cluster.write_attributes(
+            {
+                "on_off": 1,
+            }
+        )
+        m1.assert_called_with(
+            cluster=0xEF00,
+            sequence=1,
+            data=b"\x01\x01\x00\x00\x01\x82\x01\x00\x01\x01",
+            command_id=0,
+            timeout=5,
+            expect_reply=False,
+            use_ieee=False,
+            ask_for_ack=None,
+            priority=t.PacketPriority.NORMAL,
+        )
+        assert status == [
+            foundation.WriteAttributesStatusRecord(foundation.Status.SUCCESS)
+        ]
+
+
+@pytest.mark.parametrize(
+    "quirk",
+    (
+        Saswell_TZE200,
+        Saswell_TYST11,
+    ),
+)
+async def test_saswell_send_attribute_schedule_mode(zigpy_device_from_quirk, quirk):
+    """Test thermostatic valve outgoing commands."""
+
+    valve_dev = zigpy_device_from_quirk(quirk)
+    tuya_cluster = valve_dev.endpoints[1].tuya_manufacturer
+    onoff_cluster = valve_dev.endpoints[5].on_off
+
+    async def async_success(*args, **kwargs):
+        return foundation.Status.SUCCESS
+
+    with mock.patch.object(
+        tuya_cluster.endpoint, "request", side_effect=async_success
+    ) as m1:
+        (status,) = await onoff_cluster.write_attributes(
+            {
+                "on_off": 1,
+            }
+        )
+        m1.assert_called_with(
+            cluster=0xEF00,
+            sequence=1,
+            data=b"\x01\x01\x00\x00\x01\x6c\x01\x00\x01\x01",
+            command_id=0,
+            timeout=5,
+            expect_reply=False,
+            use_ieee=False,
+            ask_for_ack=None,
+            priority=t.PacketPriority.NORMAL,
+        )
+        assert status == [
+            foundation.WriteAttributesStatusRecord(foundation.Status.SUCCESS)
+        ]
+
+
+@pytest.mark.parametrize(
+    "quirk",
+    (
+        Saswell_TZE200,
+        Saswell_TYST11,
+    ),
+)
+async def test_saswell_send_attribute_away_mode(zigpy_device_from_quirk, quirk):
+    """Test thermostatic valve outgoing commands."""
+
+    valve_dev = zigpy_device_from_quirk(quirk)
+    tuya_cluster = valve_dev.endpoints[1].tuya_manufacturer
+    onoff_cluster = valve_dev.endpoints[6].on_off
+
+    async def async_success(*args, **kwargs):
+        return foundation.Status.SUCCESS
+
+    with mock.patch.object(
+        tuya_cluster.endpoint, "request", side_effect=async_success
+    ) as m1:
+        (status,) = await onoff_cluster.write_attributes(
+            {
+                "on_off": 1,
+            }
+        )
+        m1.assert_called_with(
+            cluster=0xEF00,
+            sequence=1,
+            data=b"\x01\x01\x00\x00\x01\x6a\x01\x00\x01\x01",
+            command_id=0,
+            timeout=5,
+            expect_reply=False,
+            use_ieee=False,
+            ask_for_ack=None,
+            priority=t.PacketPriority.NORMAL,
+        )
+        assert status == [
+            foundation.WriteAttributesStatusRecord(foundation.Status.SUCCESS)
+        ]
+
+
+@pytest.mark.parametrize(
+    "quirk",
+    (
+        Saswell_TZE200,
+        Saswell_TYST11,
+    ),
+)
+async def test_saswell_send_attribute_temp_offset(zigpy_device_from_quirk, quirk):
+    """Test thermostatic valve outgoing commands."""
+
+    valve_dev = zigpy_device_from_quirk(quirk)
+    tuya_cluster = valve_dev.endpoints[1].tuya_manufacturer
+    temp_offset_cluster = valve_dev.endpoints[7].analog_output
+
+    async def async_success(*args, **kwargs):
+        return foundation.Status.SUCCESS
+
+    with mock.patch.object(
+        tuya_cluster.endpoint, "request", side_effect=async_success
+    ) as m1:
+        (status,) = await temp_offset_cluster.write_attributes(
+            {
+                "present_value": 180,
+            }
+        )
+        m1.assert_called_with(
+            cluster=0xEF00,
+            sequence=1,
+            data=b"\x01\x01\x00\x00\x01\x1b\x02\x00\x04\x00\x00\x00\xb4",
+            command_id=0,
+            timeout=5,
+            expect_reply=False,
+            use_ieee=False,
+            ask_for_ack=None,
+            priority=t.PacketPriority.NORMAL,
+        )
+        assert status == [
+            foundation.WriteAttributesStatusRecord(foundation.Status.SUCCESS)
+        ]

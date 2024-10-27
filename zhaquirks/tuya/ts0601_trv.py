@@ -802,7 +802,7 @@ class MoesWindowDetection(LocalDataCluster, OnOff):
         )
         self._update_attribute(self.attributes_by_name["on_off"].id, value[2])
 
-    async def write_attributes(self, attributes, manufacturer=None):
+    async def write_attributes(self, attributes, manufacturer=None, **kwargs):
         """Defer attributes writing to the set_data tuya command."""
 
         records = self._write_attr_records(attributes)
@@ -1218,7 +1218,7 @@ class ZONNSMARTHelperOnOff(LocalDataCluster, OnOff):
         """Return dict with attribute and value for thermostat."""
         return None
 
-    async def write_attributes(self, attributes, manufacturer=None):
+    async def write_attributes(self, attributes, manufacturer=None, **kwargs):
         """Defer attributes writing to the set_data tuya command."""
         records = self._write_attr_records(attributes)
         if not records:
@@ -1352,7 +1352,7 @@ class ZONNSMARTTemperatureOffset(LocalDataCluster, AnalogOutput):
         """Get current temperature offset value."""
         return self._attr_cache.get(self.attributes_by_name["present_value"].id)
 
-    async def write_attributes(self, attributes, manufacturer=None):
+    async def write_attributes(self, attributes, manufacturer=None, **kwargs):
         """Modify value before passing it to the set_data tuya command."""
         for attrid, value in attributes.items():
             if isinstance(attrid, str):
@@ -1668,7 +1668,7 @@ class SaswellTemperatureOffset(LocalDataCluster, AnalogOutput):
         """Get current temperature offset value."""
         return self._attr_cache.get(self.attributes_by_name["present_value"].id)
 
-    async def write_attributes(self, attributes, manufacturer=None):
+    async def write_attributes(self, attributes, manufacturer=None, **kwargs):
         """Modify value before passing it to the set_data tuya command."""
         for attrid, value in attributes.items():
             if isinstance(attrid, str):
@@ -1700,7 +1700,7 @@ class SaswellCustomOnOff(LocalDataCluster, OnOff):
         """Map standardized attribute value to dict of manufacturer values."""
         return {}
 
-    async def write_attributes(self, attributes, manufacturer=None):
+    async def write_attributes(self, attributes, manufacturer=None, **kwargs):
         """Implement writeable attributes."""
 
         records = self._write_attr_records(attributes)
@@ -1793,7 +1793,7 @@ class SaswellChildLock(SaswellCustomOnOff):
             return {SASWELL_CHILD_LOCK_ATTR: value}
 
 
-class SaswellOpenWindoDetection(SaswellCustomOnOff):
+class SaswellOpenWindowDetection(SaswellCustomOnOff):
     """Open Window Detection support."""
 
     def window_detect_change(self, value):
@@ -2275,7 +2275,7 @@ class Saswell_TYST11(TuyaThermostat):
                     Identify.cluster_id,
                     SaswellThermostat,
                     SaswellManufCluster,
-                    SaswellOpenWindoDetection,
+                    SaswellOpenWindowDetection,
                     SaswellUserInterface,
                 ],
                 OUTPUT_CLUSTERS: [
@@ -2390,7 +2390,7 @@ class Saswell_TZE200(TuyaThermostat):
                     Scenes.cluster_id,
                     SaswellThermostat,
                     SaswellManufCluster,
-                    SaswellOpenWindoDetection,
+                    SaswellOpenWindowDetection,
                     SaswellUserInterface,
                 ],
                 OUTPUT_CLUSTERS: [Time.cluster_id, Ota.cluster_id],
